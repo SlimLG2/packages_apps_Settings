@@ -105,7 +105,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private static final String CLEAR_ADB_KEYS = "clear_adb_keys";
     private static final String ADB_NOTIFY = "adb_notify";
     private static final String ENABLE_TERMINAL = "enable_terminal";
-    private static final String KEEP_SCREEN_ON = "keep_screen_on";
+    private static final String KEEP_SCREEN_ON_MODES = "keep_screen_on_modes";
     private static final String BT_HCI_SNOOP_LOG = "bt_hci_snoop_log";
     private static final String ENABLE_OEM_UNLOCK = "oem_unlock_enable";
     private static final String ALLOW_MOCK_LOCATION = "allow_mock_location";
@@ -205,7 +205,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private Preference mClearAdbKeys;
     private SwitchPreference mAdbNotify;
     private SwitchPreference mEnableTerminal;
-    private SwitchPreference mKeepScreenOn;
+    private ListPreference mKeepScreenOn;
     private SwitchPreference mBtHciSnoopLog;
     private SwitchPreference mEnableOemUnlock;
     private SwitchPreference mAllowMockLocation;
@@ -323,7 +323,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             mEnableTerminal = null;
         }
 
-        mKeepScreenOn = findAndInitSwitchPref(KEEP_SCREEN_ON);
+        mKeepScreenOn = addListPreference(KEEP_SCREEN_ON_MODES);
         mBtHciSnoopLog = findAndInitSwitchPref(BT_HCI_SNOOP_LOG);
         mEnableOemUnlock = findAndInitSwitchPref(ENABLE_OEM_UNLOCK);
         if (!showEnableOemUnlockPreference()) {
@@ -594,6 +594,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         }
         updateSwitchPreference(mKeepScreenOn, Settings.Global.getInt(cr,
                 Settings.Global.STAY_ON_WHILE_PLUGGED_IN, 0) != 0);
+        updateStayAwakeOptions();
         updateSwitchPreference(mBtHciSnoopLog, Settings.Secure.getInt(cr,
                 Settings.Secure.BLUETOOTH_HCI_LOG, 0) != 0);
         if (mEnableOemUnlock != null) {
@@ -735,6 +736,28 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                     Settings.Secure.ADB_ENABLED, 1);
         }
         updateRootAccessOptions();
+    }
+
+    private void resetAdbNotifyOptions() {
+        Settings.Secure.putInt(getActivity().getContentResolver(),
+                Settings.Secure.ADB_NOTIFY, 1);
+    }
+
+    private void updateStayAwakeOptions() {
+        int index = Settings.Global.getInt(getActivity().getContentResolver(),
+                Settings.Global.STAY_ON_WHILE_PLUGGED_IN, 0);
+        final String[] values = getResources().getStringArray(R.array.keep_screen_on_values);
+        final String[] summaries = getResources().getStringArray(R.array.keep_screen_on_titles);
+        // The old value contained 0 (disable) or 3 (BATTERY_PLUGGED_AC|BATTERY_PLUGGED_USB)
+        // Currently only have 3 values (0: Not enabled; 1: debugging over usb; >2: charging)
+        // NOTE: If we have newer values, then we need to migrate
+        // this property
+        if (index >= values.length) {
+            index = values.length - 1;
+        }
+        mKeepScreenOn.setValue(values[index]);
+        mKeepScreenOn.setSummary(summaries[index]);
+        mKeepScreenOn.setOnPreferenceChangeListener(this);
     }
 
     private void updateHdcpValues() {
@@ -1021,6 +1044,13 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         }
         mShowNonRectClip.setValueIndex(0);
         mShowNonRectClip.setSummary(mShowNonRectClip.getEntries()[0]);
+    }
+
+    private void writeStayAwakeOptions(Object newValue) {
+        int val = Integer.parseInt((String) newValue);
+        Settings.Global.putInt(getActivity().getContentResolver(),
+                    Settings.Global.STAY_ON_WHILE_PLUGGED_IN, val);
+        updateStayAwakeOptions();
     }
 
     private void writeShowNonRectClipOptions(Object newValue) {
@@ -1736,6 +1766,8 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.CHAMBER_OF_SECRETS,
                     (Boolean) newValue ? 1 : 0);
+        } else if (preference == mKeepScreenOn) {
+            writeStayAwakeOptions(newValue);
             return true;
         }
         return false;

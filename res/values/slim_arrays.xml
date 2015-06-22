@@ -1132,4 +1132,17 @@
         <item>@string/hidden_title</item>
     </string-array>
 
+    <!-- USB 'Stay awake' Choices -->
+    <string-array name="keep_screen_on_titles" translatable="false">
+        <item>@string/keep_screen_on_never</item>
+        <item>@string/keep_screen_on_debugging</item>
+        <item>@string/keep_screen_on_charging</item>
+    </string-array>
+
+    <string-array name="keep_screen_on_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 </resources>
