@@ -53,6 +53,11 @@
                     android:summary="@string/show_ime_arrows_summary"
                     android:persistent="false" />
 
+            <SwitchPreference
+                    android:key="search_panel_enabled"
+                    android:title="@string/navigation_ring_enable_title"
+                    android:defaultValue="true"/>
+
             <ListPreference
                     android:key="pref_navbar_menu_display"
                     android:entries="@array/pref_menu_display_entries"
