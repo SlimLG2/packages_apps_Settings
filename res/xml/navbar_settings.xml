@@ -53,7 +53,7 @@
                     android:summary="@string/show_ime_arrows_summary"
                     android:persistent="false" />
 
-            <SecureSettingSwitchPreference
+            <SwitchPreference
                     android:key="search_panel_enabled"
                     android:title="@string/navigation_ring_enable_title"
                     android:defaultValue="false"/>
