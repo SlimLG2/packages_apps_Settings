@@ -45,12 +45,16 @@ import com.android.settings.SettingsPreferenceFragment;
 public class PerformanceSettings extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
     private static final String TAG = "PerformanceSettings";
+    private static final String SCROLLINGCACHE_PREF = "pref_scrollingcache";
+    private static final String SCROLLINGCACHE_PERSIST_PROP = "persist.sys.scrollingcache";
+    private static final String SCROLLINGCACHE_DEFAULT = "1";
 
     private static final String CATEGORY_PROFILES = "perf_profile_prefs";
 
     private static final String PERF_PROFILE_PREF = "pref_perf_profile";
 
     private ListPreference mPerfProfilePref;
+    private ListPreference mScrollingCachePref;
 
     private String[] mPerfProfileEntries;
     private String[] mPerfProfileValues;
@@ -113,6 +117,10 @@ public class PerformanceSettings extends SettingsPreferenceFragment implements
         }
 
         mPerformanceProfileObserver = new PerformanceProfileObserver(new Handler());
+        mScrollingCachePref = (ListPreference) prefSet.findPreference(SCROLLINGCACHE_PREF);
+        mScrollingCachePref.setValue(SystemProperties.get(SCROLLINGCACHE_PERSIST_PROP,
+                SystemProperties.get(SCROLLINGCACHE_PERSIST_PROP, SCROLLINGCACHE_DEFAULT)));
+        mScrollingCachePref.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -142,10 +150,13 @@ public class PerformanceSettings extends SettingsPreferenceFragment implements
                 mPowerManager.setPowerProfile(String.valueOf(newValue));
                 setCurrentPerfProfileSummary();
                 return true;
+            } else if (preference == mScrollingCachePref) {
+                    SystemProperties.set(SCROLLINGCACHE_PERSIST_PROP, (String)newValue);
+                return true;
+                }
             }
-        }
         return false;
-    }
+}
 
     private void setCurrentPerfProfileSummary() {
         String value = mPowerManager.getPowerProfile();
