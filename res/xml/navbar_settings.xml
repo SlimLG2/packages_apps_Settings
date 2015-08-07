@@ -56,7 +56,7 @@
             <SecureSettingSwitchPreference
                     android:key="search_panel_enabled"
                     android:title="@string/navigation_ring_enable_title"
-                    android:defaultValue="true"/>
+                    android:defaultValue="false"/>
 
             <ListPreference
                     android:key="pref_navbar_menu_display"
