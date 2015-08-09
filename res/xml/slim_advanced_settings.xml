@@ -75,7 +75,6 @@
            android:summary="@string/wakelock_blocker_summary"
            android:icon="@drawable/ic_menu_save"
            android:fragment="com.android.settings.slim.WakeLockBlocker" />
-       </PreferenceScreen>
 
     </PreferenceCategory>
 
