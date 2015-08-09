@@ -69,6 +69,13 @@
                 android:targetClass="com.cyngn.maxxaudio.activity.ActivityMusic" />
         </PreferenceScreen>
 
+       <PreferenceScreen
+           android:key="wakelock_blocker"
+           android:title="@string/wakelock_blocker_title"
+           android:summary="@string/wakelock_blocker_summary"
+           android:icon="@drawable/ic_menu_save"
+           android:fragment="com.android.settings.slim.WakeLockBlocker" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
