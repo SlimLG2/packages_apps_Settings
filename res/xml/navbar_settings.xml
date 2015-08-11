@@ -59,17 +59,17 @@
                     android:title="@string/navigation_ring_enable_title"
                     android:defaultValue="false"/>
 
+            <PreferenceScreen
+                    android:key="navigation_bar_ring"
+                    android:fragment="com.android.settings.slim.NavRing"
+                    android:title="@string/navigation_ring_title" />
+
             <ListPreference
                     android:key="pref_navbar_menu_display"
                     android:entries="@array/pref_menu_display_entries"
                     android:entryValues="@array/pref_menu_display_values"
                     android:title="@string/title_pref_menu_display"
                     android:summary="@string/summary_pref_menu_display" />
-
-            <PreferenceScreen
-                    android:key="navigation_bar_ring"
-                    android:fragment="com.android.settings.slim.NavRing"
-                    android:title="@string/navigation_ring_title" />
 
             <ListPreference
                     android:key="pref_navbar_menu_location"
